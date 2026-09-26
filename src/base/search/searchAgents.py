@@ -296,15 +296,15 @@ class CornersProblem(search.SearchProblem):
 
     def __init__(self, startingGameState):
 
-        # Armazena as paredes do labirinto
+        # armazena as paredes do labirinto
         self.walls = startingGameState.getWalls()
 
-        # Armazena a posição inicial do Pacman
+        # armazena a posição inicial do Pacman
         self.startingPosition = (
             startingGameState.getPacmanPosition()
         )
 
-        # Define os quatro cantos do labirinto
+        # define os quatro cantos do labirinto
         top = self.walls.height - 2
         right = self.walls.width - 2
 
@@ -315,7 +315,7 @@ class CornersProblem(search.SearchProblem):
             (right, top)
         )
 
-        # Verifica se existe comida nos cantos
+        # verifica se existe comida nos cantos
         for corner in self.corners:
             if not startingGameState.hasFood(*corner):
                 print(
@@ -323,7 +323,7 @@ class CornersProblem(search.SearchProblem):
                     + str(corner)
                 )
 
-        # Contador de estados expandidos
+        # contador de estados expandidos
         self._expanded = 0
 
     def getStartState(self):
@@ -332,11 +332,11 @@ class CornersProblem(search.SearchProblem):
         Aqui, o estado é uma tupla:
         (posição atual do Pacman, cantos visitados)
         """
-        return (self.startingPosition, ())  # Nenhum canto visitado no início
+        return (self.startingPosition, ())  # nenhum canto visitado no início
 
     def isGoalState(self, state):
         """
-        Verifica se todos os quatro cantos
+        verifica se todos os quatro cantos
         já foram visitados.
         """
 
@@ -353,9 +353,9 @@ class CornersProblem(search.SearchProblem):
 
         children = []
 
-        # Percorre todas as ações válidas
+        # percorre todas as ações válidas
         for action in self.getActions(state):
-            # Calcula o próximo estado
+            # calcula o próximo estado
             nextState = self.getNextState(
                 state,
                 action
@@ -371,7 +371,7 @@ class CornersProblem(search.SearchProblem):
                 (nextState, action, cost)
             )
 
-        # Incrementa o contador de expansões
+        # incrementa o contador de expansões
         self._expanded += 1
 
         return children
@@ -392,7 +392,7 @@ class CornersProblem(search.SearchProblem):
             "Invalid next state passed to getActionCost().")
         return 1
 
-    # Vai calcular o próximo estado após executar uma ação, atualizando os cantos visitados.
+    # vai calcular o próximo estado após executar uma ação, atualizando os cantos visitados.
     def getNextState(self, state, action): 
         currentPosition, visitedCorners = state
         nextPosition = self.getNextPosition(currentPosition, action)

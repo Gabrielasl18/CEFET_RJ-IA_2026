@@ -107,40 +107,39 @@ def depthFirstSearch(problem):
     Retorna uma lista de ações que leva o Pacman até o objetivo.
     """
 
-    # Cria a pilha que armazenará os estados a explorar
+    # cria a pilha que armazenará os estados a explorar
     frontier = util.Stack()
-    # Conjunto de estados já explorados
+    # conjunto de estados já explorados
     expanded = set()
-    # Obtém o estado inicial
+    # obtém o estado inicial
     startState = problem.getStartState()
-    # Cada elemento contém:
-    # (estado atual, caminho percorrido)
+    # cada elemento contém (estado atual, caminho percorrido)
     frontier.push((startState, []))
 
-    # Continua enquanto houver estados na pilha
+    # continua enquanto houver estados na pilha
     while not frontier.isEmpty():
-        # Remove o último estado inserido
+        # remove o último estado inserido
         state, path = frontier.pop()
-        # Evita expandir estados já visitados
+        # evita expandir estados já visitados
         if state in expanded:
             continue
-        # Verifica se chegou ao objetivo
+        # verifica se chegou ao objetivo
         if problem.isGoalState(state):
             return path
 
-        # Marca o estado como explorado
+        # marca o estado como explorado
         expanded.add(state)
 
-        # Obtém os sucessores do estado atual
+        # pega os sucessores do estado atual
         for nextState, action, cost in problem.expand(state):
-            # Adiciona os estados ainda não explorados
+            # adiciona os estados ainda não explorados
             if nextState not in expanded:
-                # Cria o caminho até o sucessor
+                # cria o caminho até o sucessor
                 newPath = path + [action]
-                # Insere o sucessor na pilha
+                # insere o sucessor na pilha
                 frontier.push((nextState, newPath))
 
-    # Retorna lista vazia caso não encontre solução
+    # retorna lista vazia caso não encontre solução
     return []
 
 # Questao 2 - BFS
@@ -153,38 +152,38 @@ def breadthFirstSearch(problem):
     utilizando uma fila para explorar os estados por nível.
     """
 
-    # Cria a fila de estados a serem explorados
+    # cria a fila de estados a serem explorados
     frontier = util.Queue()
-    # Conjunto de estados já visitados
+    # conjunto de estados já visitados
     visited = set()
-    # Obtém o estado inicial
+    # busca o estado inicial
     startState = problem.getStartState()
-    # Insere o estado inicial e o caminho vazio na fila
+    # insere o estado inicial e o caminho vazio na fila
     frontier.push((startState, []))
-    # Marca o estado inicial como visitado
+    # marca o estado inicial como visitado
     visited.add(startState)
 
-    # Continua enquanto houver estados na fila
+    # continua enquanto houver estados na fila
     while not frontier.isEmpty():
-        # Remove o primeiro estado inserido
+        # remove o primeiro estado inserido
         state, path = frontier.pop()
 
-        # Verifica se o estado atual é o objetivo
+        # verifica se o estado atual é o objetivo
         if problem.isGoalState(state):
             return path
 
-        # Expande os sucessores do estado atual
+        # expande os sucessores do estado atual
         for nextState, action, cost in problem.expand(state):
-            # Verifica se o sucessor ainda não foi visitado
+            # verifica se o sucessor ainda não foi visitado
             if nextState not in visited:
-                # Marca o sucessor como visitado
+                # marca o sucessor como visitado
                 visited.add(nextState)
-                # Atualiza o caminho até o sucessor
+                # atualiza o caminho até o sucessor
                 newPath = path + [action]
-                # Insere o sucessor no final da fila
+                # insere o sucessor no final da fila
                 frontier.push((nextState, newPath))
 
-    # Retorna uma lista vazia se não encontrar solução
+    # retorna uma lista vazia se não encontrar solução
     return []
 
 def nullHeuristic(state, problem=None):
