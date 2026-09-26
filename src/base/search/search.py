@@ -99,26 +99,93 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+# Questao 1 - DFS
+
 def depthFirstSearch(problem):
     """
-    Search the deepest nodes in the search tree first.
-
-    Your search algorithm needs to return a list of actions that reaches the
-    goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    Busca em profundidade (DFS) utilizando busca em grafo.
+    Retorna uma lista de ações que leva o Pacman até o objetivo.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # Cria a pilha que armazenará os estados a explorar
+    frontier = util.Stack()
+    # Conjunto de estados já explorados
+    expanded = set()
+    # Obtém o estado inicial
+    startState = problem.getStartState()
+    # Cada elemento contém:
+    # (estado atual, caminho percorrido)
+    frontier.push((startState, []))
+
+    # Continua enquanto houver estados na pilha
+    while not frontier.isEmpty():
+        # Remove o último estado inserido
+        state, path = frontier.pop()
+        # Evita expandir estados já visitados
+        if state in expanded:
+            continue
+        # Verifica se chegou ao objetivo
+        if problem.isGoalState(state):
+            return path
+
+        # Marca o estado como explorado
+        expanded.add(state)
+
+        # Obtém os sucessores do estado atual
+        for nextState, action, cost in problem.expand(state):
+            # Adiciona os estados ainda não explorados
+            if nextState not in expanded:
+                # Cria o caminho até o sucessor
+                newPath = path + [action]
+                # Insere o sucessor na pilha
+                frontier.push((nextState, newPath))
+
+    # Retorna lista vazia caso não encontre solução
+    return []
+
+# Questao 2 - BFS
 
 def breadthFirstSearch(problem):
-    """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """
+    Busca em largura (BFS).
+
+    Encontra um caminho do estado inicial até o objetivo,
+    utilizando uma fila para explorar os estados por nível.
+    """
+
+    # Cria a fila de estados a serem explorados
+    frontier = util.Queue()
+    # Conjunto de estados já visitados
+    visited = set()
+    # Obtém o estado inicial
+    startState = problem.getStartState()
+    # Insere o estado inicial e o caminho vazio na fila
+    frontier.push((startState, []))
+    # Marca o estado inicial como visitado
+    visited.add(startState)
+
+    # Continua enquanto houver estados na fila
+    while not frontier.isEmpty():
+        # Remove o primeiro estado inserido
+        state, path = frontier.pop()
+
+        # Verifica se o estado atual é o objetivo
+        if problem.isGoalState(state):
+            return path
+
+        # Expande os sucessores do estado atual
+        for nextState, action, cost in problem.expand(state):
+            # Verifica se o sucessor ainda não foi visitado
+            if nextState not in visited:
+                # Marca o sucessor como visitado
+                visited.add(nextState)
+                # Atualiza o caminho até o sucessor
+                newPath = path + [action]
+                # Insere o sucessor no final da fila
+                frontier.push((nextState, newPath))
+
+    # Retorna uma lista vazia se não encontrar solução
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -127,10 +194,51 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+# Questao 3 - A* Search
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    # fila de prioridade usada pelo algoritmo a* (prioriza menor custo total g + h)
+    frontier = util.PriorityQueue()
+    start_state = problem.getStartState()
+    
+    # adiciona o estado inicial com caminho vazio e custo zero
+    # a prioridade inicial é apenas a heuristica do estado inicial
+    frontier.push((start_state, [], 0), heuristic(start_state, problem))
+    
+    # dicionario
+    visited = dict()
+    
+    # enquanto houver nós na fronteira
+    while not frontier.isEmpty():
+        # remove o nó com menor prioridade (menor custo total estimado)
+        state, path, cost = frontier.pop()
+
+        # se este estado já foi visitado com custo menor ou igual, ignora
+        if state in visited and visited[state] <= cost:
+            continue
+        
+        # registra o custo atual como o menor conhecido para este estado
+        visited[state] = cost
+
+        # verifica se o estado atual é o objetivo
+        if problem.isGoalState(state):
+            return path  # retorna o caminho de ações até o objetivo
+        
+        # expande o nó atual gerando seus sucessores
+        for successor, action, step_cost in problem.expand(state):
+            # calcula o novo custo acumulado até o sucessor
+            new_cost = cost + step_cost
+            # se o sucessor ainda não foi visitado ou encontramos um custo menor
+            if successor not in visited or visited[successor] > new_cost:
+                # calcula a prioridade como g(n) + h(n)
+                priority = new_cost + heuristic(successor, problem)
+                # adiciona o sucessor na fronteira com caminho atualizado e nova prioridade
+                frontier.push((successor, path + [action], new_cost), priority)
+
+    # se a fronteira esvaziar sem encontrar solução, retorna caminho vazio
+    return []
 
 
 # Abbreviations
