@@ -344,37 +344,24 @@ class CornersProblem(search.SearchProblem):
         return len(visitedCorners) == 4
 
     def expand(self, state):
-        """
-        Gera os sucessores do estado atual.
-
-        Cada sucessor contém:
-        (próximo estado, ação, custo)
-        """
-
         children = []
+        currentPosition, visitedCorners = state
 
-        # percorre todas as ações válidas
         for action in self.getActions(state):
-            # calcula o próximo estado
-            nextState = self.getNextState(
-                state,
-                action
-            )
-            # Calcula o custo da ação
-            cost = self.getActionCost(
-                state,
-                action,
-                nextState
-            )
-            # Adiciona o sucessor à lista
-            children.append(
-                (nextState, action, cost)
-            )
+            nextPosition = self.getNextPosition(currentPosition, action)
 
-        # incrementa o contador de expansões
+            if nextPosition in self.corners and nextPosition not in visitedCorners:
+                newVisited = visitedCorners + (nextPosition,)
+            else:
+                newVisited = visitedCorners
+
+            newVisited = tuple(sorted(set(newVisited)))
+            nextState = (nextPosition, newVisited)
+            children.append((nextState, action, 1))
+
         self._expanded += 1
-
         return children
+
 
     def getActions(self, state):
         possible_directions = [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]
@@ -391,6 +378,12 @@ class CornersProblem(search.SearchProblem):
         assert next_state == self.getNextState(state, action), (
             "Invalid next state passed to getActionCost().")
         return 1
+
+    def getNextPosition(self, position, action): # coordenadas da posiçao do pacman
+        x, y = position
+        dx, dy = Actions.directionToVector(action)
+        nextx, nexty = int(x + dx), int(y + dy)
+        return (nextx, nexty)
 
     # vai calcular o próximo estado após executar uma ação, atualizando os cantos visitados.
     def getNextState(self, state, action): 
