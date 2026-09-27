@@ -344,24 +344,27 @@ class CornersProblem(search.SearchProblem):
         return len(visitedCorners) == 4
 
     def expand(self, state):
-        children = []
-        currentPosition, visitedCorners = state
+        position, visited = state
+        successors = []
 
-        for action in self.getActions(state):
-            nextPosition = self.getNextPosition(currentPosition, action)
+        for move in self.getActions(state):
+            destination = self.getNextPosition(position, move)
 
-            if nextPosition in self.corners and nextPosition not in visitedCorners:
-                newVisited = visitedCorners + (nextPosition,)
-            else:
-                newVisited = visitedCorners
+            cornersReached = set(visited)
 
-            newVisited = tuple(sorted(set(newVisited)))
-            nextState = (nextPosition, newVisited)
-            children.append((nextState, action, 1))
+            if destination in self.corners:
+                cornersReached.add(destination)
+
+            updatedState = (
+                destination,
+                tuple(sorted(cornersReached))
+            )
+
+            successors.append((updatedState, move, 1))
 
         self._expanded += 1
-        return children
 
+        return successors
 
     def getActions(self, state):
         possible_directions = [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]
