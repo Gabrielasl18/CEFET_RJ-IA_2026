@@ -569,7 +569,7 @@ class ClosestDotSearchAgent(SearchAgent):
                 currentState = currentState.generateChild(0, action)
         self.actionIndex = 0
         print('Path found with cost %d.' % len(self.actions))
-        
+
     def findPathToClosestDot(self, gameState):
         """
         Returns a path (a list of actions) to the closest dot, starting from
@@ -610,6 +610,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0 # DO NOT CHANGE
 
+    # Questão 7
+    
     def isGoalState(self, state):
         """
         Verifica se existe comida na posição atual
