@@ -569,15 +569,20 @@ class ClosestDotSearchAgent(SearchAgent):
                 currentState = currentState.generateChild(0, action)
         self.actionIndex = 0
         print('Path found with cost %d.' % len(self.actions))
-
+        
     def findPathToClosestDot(self, gameState):
         """
-        Encontra um caminho até a comida mais próxima
-        utilizando a busca em largura.
+        Returns a path (a list of actions) to the closest dot, starting from
+        gameState.
         """
+        # Here are some useful elements of the startState
+        from search import breadthFirstSearch
+        startPosition = gameState.getPacmanPosition()
+        food = gameState.getFood()
+        walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-        path = search.breadthFirstSearch(problem)
-        return path
+
+        return breadthFirstSearch(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
